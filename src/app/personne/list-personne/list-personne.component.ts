@@ -14,7 +14,7 @@ export class ListPersonneComponent implements OnInit {
   editedPersonne: any = {};
   currentUser: any;
 
-  constructor(private personneService: PersonneService,private router : Router) {
+  constructor(private personneService: PersonneService, private router: Router) {
   }
 
   ngOnInit() {
@@ -25,20 +25,30 @@ export class ListPersonneComponent implements OnInit {
   getPersonnes() {
     this.personneService.getPersonnes().subscribe((data) => {
       this.personnes = data;
+      this.orderPersonnesByFirstName();
     });
   }
 
+  orderPersonnesByFirstName() {
+    this.personnes.sort((a, b) => {
+      const nameA = a.firstName.toUpperCase(); // ignore case
+      const nameB = b.firstName.toUpperCase(); // ignore case
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
 
   viewDetails(personneId: number) {
     this.router.navigate(['/personne/detail', personneId]);
   }
 
- 
- 
-  
   addPersonne() {
     this.personneService.createPersonne(this.newPersonne).subscribe(() => {
-    
       this.getPersonnes();
     });
   }
@@ -49,7 +59,6 @@ export class ListPersonneComponent implements OnInit {
 
   updatepersonne() {
     this.personneService.updatePersonne(this.editedPersonne.id, this.editedPersonne).subscribe(() => {
-   
       this.getPersonnes();
     });
   }
@@ -63,4 +72,3 @@ export class ListPersonneComponent implements OnInit {
   }
 
 }
-
